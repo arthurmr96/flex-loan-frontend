@@ -6,14 +6,13 @@ import { networkIdByName } from '../../../services/NetworkService'
 import { DefaultPageTemplate } from '../../../shared/layout/DefaultPageTemplate'
 
 interface HomeProps {
-  chainId: number
   network: string
 }
 
-function Home({ chainId, network }: HomeProps) {
+function Home({ network }: HomeProps) {
   return (
     <DefaultPageTemplate network={network} pageHeaderTitle='Get liquidity' pageHeaderInit={<GetLiquidityHeader />}>
-      <GetLiquidityTableData chainId={chainId} />
+      <GetLiquidityTableData />
     </DefaultPageTemplate>
   )
 }

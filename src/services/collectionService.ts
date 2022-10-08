@@ -1,12 +1,12 @@
 import axios from 'axios'
 
 interface CollectionServiceProps {
-  getCollectionData(collectionAddress: string): Promise<void>
+  getCollectionData(): Promise<void>
 }
 
 const collectionService = (): CollectionServiceProps => {
   return {
-    getCollectionData: async (collectionAddress: string) => {
+    getCollectionData: async () => {
       const options = {
         method: 'GET',
         url: 'https://goerli.ethereum.coinbasecloud.net/api/nft/v2/contracts/0x46bEF163D6C470a4774f9585F3500Ae3b642e751',

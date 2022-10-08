@@ -1,14 +1,9 @@
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { Col, Modal, Row } from 'antd'
-import styled from 'styled-components'
-
-interface ParticipantsModalProps {
-  chainId: number
-}
 
 export const getLoanModalVar = makeVar(false)
 
-export function ParticipantsModal({ chainId }: ParticipantsModalProps) {
+export function ParticipantsModal() {
   const getLoanModal = useReactiveVar(getLoanModalVar)
   const handleCancel = () => {
     getLoanModalVar(false)
@@ -24,11 +19,11 @@ export function ParticipantsModal({ chainId }: ParticipantsModalProps) {
   )
 }
 
-const { Content } = {
-  Content: styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 21px;
-  `
-}
+// const { Content } = {
+//   Content: styled.div`
+//     width: 100%;
+//     display: flex;
+//     flex-direction: column;
+//     gap: 21px;
+//   `
+// }

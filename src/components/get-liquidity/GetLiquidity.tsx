@@ -1,40 +1,34 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/naming-convention */
+import { ChromeOutlined } from '@ant-design/icons'
 import azuki from '@assets/azuki.svg'
 import boredApe from '@assets/bored-ape.svg'
 import criptopunks from '@assets/criptopunks.svg'
 
 import { Avatar, Button, Col, Row, Table, Typography } from 'antd'
 import { useEffect, useState } from 'react'
-import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import styled from 'styled-components'
 import laudVaultContract from '../../contract/laudVaultContract'
 
-interface GetLiquidityTableDataProps {
-  chainId: number
-}
-interface dataTable {
+interface DataTable {
   collectionAddress: string
   collectionName: string
   collectionImage: string
   florPrice: string
 }
 
-function GetLiquidityTableData({ chainId }: GetLiquidityTableDataProps) {
-  const [tableData, setTableData] = useState<dataTable[]>([])
+function GetLiquidityTableData() {
+  const [tableData, setTableData] = useState<DataTable[]>([])
   const [loading, setLoading] = useState(true)
   const columns = [
     {
       title: 'Avalible Collection',
-      dataIndex: ['nft'],
-      key: 'NFT',
-      fixed: 'left',
-      render: (_: unknown, data: dataTable) => (
+      dataIndex: 'collectionAddress',
+      key: 'collectionAddress',
+      render: (_: unknown, data: DataTable) => (
         <CollectionContainer>
           {data.collectionImage ? (
             <Avatar size={32} shape='circle' src={data.collectionImage} />
           ) : (
-            <Avatar size={32} shape='circle' icon={<Jazzicon diameter={32} seed={jsNumberForAddress(data.collectionAddress)} />} />
+            <Avatar size={32} shape='circle' icon={<ChromeOutlined />} />
           )}
           <Typography.Text>{data.collectionName}</Typography.Text>
         </CollectionContainer>
@@ -49,6 +43,7 @@ function GetLiquidityTableData({ chainId }: GetLiquidityTableDataProps) {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       render: (_: unknown) => (
         <Button type='primary' ghost>
           Get Loan
@@ -59,7 +54,7 @@ function GetLiquidityTableData({ chainId }: GetLiquidityTableDataProps) {
   useEffect(() => {
     const resolvFlorPrice = async () => {
       setLoading(true)
-      const dataSource: dataTable[] = [
+      const dataSource = [
         {
           collectionAddress: '0x9F6d70CDf08d893f0063742b51d3E9D1e18b7f74',
           collectionName: 'Azuki',

@@ -1,8 +1,8 @@
+import { UserOutlined } from '@ant-design/icons'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { Avatar, Button, Col, Row } from 'antd'
 import { providers } from 'ethers'
 import { useEffect, useState } from 'react'
-import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import { clearMultiWalletVars, signerProviderVar, walletAccountVar, walletChainIdVar } from '../graphql/variables/walletVariable'
 import { getEns } from '../services/UtilService'
 
@@ -62,13 +62,7 @@ function WalletButton() {
 
   return (
     <Row gutter={8} align='middle' justify='end'>
-      <Col>
-        {avatar ? (
-          <Avatar size={32} shape='circle' src={avatar} />
-        ) : (
-          <Avatar size={32} shape='circle' icon={<Jazzicon diameter={32} seed={jsNumberForAddress(walletAccount)} />} />
-        )}
-      </Col>
+      <Col>{avatar ? <Avatar size={32} shape='circle' src={avatar} /> : <Avatar size={32} shape='circle' icon={<UserOutlined />} />}</Col>
       <Col>
         <>
           {walletAccount && <Button onClick={connectWallet}>{name}</Button>}

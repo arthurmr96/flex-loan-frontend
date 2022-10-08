@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { BigNumber as ethersBn, ethers } from 'ethers'
-import humanFormat from 'human-format'
 
 export const formatToLocaleString = (
   value: string | number | BigNumber,
@@ -18,22 +17,6 @@ export function formatShortAccountName(address: string, size = 6): string {
 export function formatShortAddressWallet(addressFormat: string): string {
   return `${addressFormat.slice(0, 3)}...${addressFormat.slice(-3)}`
 }
-export function toHumanFormat(value: number): string {
-  if (value === 0 || Number.isNaN(value)) {
-    return '0'
-  }
-  if (value > 0 && value < 1) {
-    return formatToLocaleString(value, 5)
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-  return humanFormat(Number(value), {
-    separator: ''
-  })
-    .replace('G', 'B') // Necessary since the prefix for short scale is B, not G: https://en.wikipedia.org/wiki/Metric_prefix
-    .toLowerCase()
-}
-
 export function formatSymbol(tokenSymbol: string) {
   return tokenSymbol.length > 6 ? `${tokenSymbol.substr(0, 6)}...` : tokenSymbol
 }
