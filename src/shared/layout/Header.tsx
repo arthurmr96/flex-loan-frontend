@@ -41,7 +41,7 @@ export function Header({ title, items, network }: HeaderProps) {
         </Col>
         <Col span={16}>
           <Row align='middle' justify='end' gutter={8}>
-            <Col span={18} flex='200px'>
+            <Col span={18} flex='300px'>
               <Menu
                 selectedKeys={[selectedKey]}
                 mode='horizontal'
