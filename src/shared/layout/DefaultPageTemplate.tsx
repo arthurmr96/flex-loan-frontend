@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { Footer } from './Footer'
 import { Header } from './Header'
 import { PageHeader, PageHeaderProps } from './PageHeader'
+import { ModalTransaction } from './TransactionModal'
 
 const { Content } = Layout
 
@@ -65,6 +66,7 @@ export function DefaultPageTemplate({
         </Main>
         <Footer />
       </Layout>
+      <ModalTransaction />
     </>
   )
 }
