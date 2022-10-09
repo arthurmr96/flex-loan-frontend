@@ -4,12 +4,14 @@ import { signerProviderVar, walletAccountVar } from '@graphql/variables/walletVa
 import { useEffect, useState } from 'react'
 import { LENDER_BALANCE_QUERY, LenderBalanceQueryData, LenderBalanceQueryVars } from '@graphql/query/LenderBalanceQuery'
 import { coins } from '@services/UtilService'
+import loanVaultContract from '../../contract/loanVaultContract'
 
 const { Title, Text } = Typography
 
 export function EarnContainer() {
   const walletAccount = useReactiveVar(walletAccountVar)
   const signerProvider = useReactiveVar(signerProviderVar)
+  const [tvl, setTvl] = useState('0')
   const [balance, setBalance] = useState('0')
   const [depositAmount, setDepositAmount] = useState('')
   const [withdrawAmount, setWithdrawAmount] = useState('')
@@ -20,6 +22,14 @@ export function EarnContainer() {
     },
     skip: !walletAccount
   })
+
+  useEffect(() => {
+    const handleTvl = async () => {
+      setTvl(await loanVaultContract().getTvl())
+    }
+
+    handleTvl()
+  }, [])
 
   useEffect(() => {
     const handleBalance = async () => {
@@ -44,7 +54,7 @@ export function EarnContainer() {
           </Title>
           <Space direction='vertical' size={0}>
             <Text>Total Value Locked</Text>
-            <Text strong>Total Value Locked</Text>
+            <Text strong>{tvl} ETH</Text>
           </Space>
           <Space direction='vertical' size={0}>
             <Text>Total Borrow</Text>
@@ -69,19 +79,19 @@ export function EarnContainer() {
             <Col span={8}>
               <Space direction='vertical' size={4}>
                 <Text>Deposited</Text>
-                <Text strong>Total Value Locked</Text>
+                <Text strong>{Number(coins(data?.lender?.amount || '0', 18)).toLocaleString('en', { maximumFractionDigits: 5 })} ETH</Text>
               </Space>
             </Col>
             <Col span={8}>
               <Space direction='vertical' size={4}>
                 <Text>Interest Earned</Text>
-                <Text strong>Total Value Locked</Text>
+                <Text strong>0 ETH</Text>
               </Space>
             </Col>
             <Col span={8}>
               <Space direction='vertical' size={4}>
                 <Text>Total</Text>
-                <Text strong>Total Value Locked</Text>
+                <Text strong>{Number(coins(data?.lender?.amount || '0', 18)).toLocaleString('en', { maximumFractionDigits: 5 })} ETH</Text>
               </Space>
             </Col>
           </Row>
