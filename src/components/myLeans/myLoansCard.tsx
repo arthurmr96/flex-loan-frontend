@@ -21,7 +21,6 @@ function MyLoanCard(data: any) {
         data.collateralTargetAddress || '0x46bef163d6c470a4774f9585f3500ae3b642e751',
         data.collateralTargetTokenId || '9'
       )
-      console.log('meta', metaData)
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setNftMetadata(metaData)
       setLoading(false)
@@ -40,7 +39,7 @@ function MyLoanCard(data: any) {
         <LeansDetail>
           <div>
             <Text>Locked NFT (ID): </Text>
-            <Text strong>#5436</Text>
+            <Text strong>#{data.collateralTargetTokenId || ''}</Text>
           </div>
           <div>
             <Text>Entry price </Text>
