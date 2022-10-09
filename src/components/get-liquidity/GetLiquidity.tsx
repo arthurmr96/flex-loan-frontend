@@ -72,7 +72,7 @@ function GetLiquidityTableData() {
         },
         {
           collectionAddress: '0x46bEF163D6C470a4774f9585F3500Ae3b642e751',
-          collectionName: 'Blokies',
+          collectionName: 'Blockies',
           collectionImage: '',
           florPrice: `${await loanVaultContract().getLastPrice('0x46bEF163D6C470a4774f9585F3500Ae3b642e751')} ETH`
         }
@@ -93,6 +93,7 @@ function GetLiquidityTableData() {
     </>
   )
 }
+
 const { CollectionContainer } = {
   CollectionContainer: styled.div`
     display: flex;

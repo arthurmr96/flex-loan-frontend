@@ -5,12 +5,12 @@ function GetLiquidityHeader() {
     <>
       <Row align='middle' justify='center'>
         <Col>
-          <Typography.Title style={{ margin: '26px 0px 0 0' }}>Borrow NFT</Typography.Title>
+          <Typography.Title style={{ margin: '26px 0px 0 0' }}>Flexibility for NFT owners</Typography.Title>
         </Col>
       </Row>
       <Row align='middle' justify='center'>
         <Col>
-          <Typography.Text type='secondary'>Take advantge of the value of the nft, and keep your ownership</Typography.Text>
+          <Typography.Text type='secondary'>We allow NFT owners to get liquidity</Typography.Text>
         </Col>
       </Row>
     </>

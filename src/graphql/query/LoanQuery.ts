@@ -13,6 +13,7 @@ export const LOAN_QUERY = gql`
     loans(first: 5, where: { borrower: $borrower }) {
       id
       borrower
+      duration
       collateralTargetAddress
       collateralTargetTokenId
       amount
