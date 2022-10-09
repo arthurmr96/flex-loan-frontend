@@ -26,9 +26,9 @@ const loanVaultContractWrite = (signerProvider: ethers.providers.Web3Provider) =
       return approveTransaction.hash as string
     },
     deposit: async (amount: string) => {
-      const gasLimit = await loanVaultContract.estimateGas.deposit({ value: ethers.utils.parseEther(amount) })
+      const gasLimit = await loanVaultContract.estimateGas.lend({ value: ethers.utils.parseEther(amount) })
       const gasPrice = await getGasPrice(signerProvider)
-      const depositTransaction: ethers.Transaction = await loanVaultContract.deposit({
+      const depositTransaction: ethers.Transaction = await loanVaultContract.lend({
         gasLimit: getGasLimit(gasLimit),
         gasPrice,
         value: ethers.utils.parseEther(amount)
@@ -36,12 +36,7 @@ const loanVaultContractWrite = (signerProvider: ethers.providers.Web3Provider) =
       return depositTransaction.hash as string
     },
     withdraw: async () => {
-      const gasLimit = await loanVaultContract.estimateGas.deposit()
-      const gasPrice = await getGasPrice(signerProvider)
-      const depositTransaction: ethers.Transaction = await loanVaultContract.deposit({
-        gasLimit: getGasLimit(gasLimit),
-        gasPrice
-      })
+      const depositTransaction: ethers.Transaction = await loanVaultContract.withdraw()
       return depositTransaction.hash as string
     }
   }

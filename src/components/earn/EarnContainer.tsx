@@ -1,10 +1,12 @@
-import { Button, Card, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useQuery, useReactiveVar } from '@apollo/client'
+import { LenderBalanceQueryData, LenderBalanceQueryVars, LENDER_BALANCE_QUERY } from '@graphql/query/LenderBalanceQuery'
 import { signerProviderVar, walletAccountVar } from '@graphql/variables/walletVariable'
-import { useEffect, useState } from 'react'
-import { LENDER_BALANCE_QUERY, LenderBalanceQueryData, LenderBalanceQueryVars } from '@graphql/query/LenderBalanceQuery'
 import { coins } from '@services/UtilService'
+import { Button, Card, Col, Form, Input, Row, Space, Typography } from 'antd'
+import { useCallback, useEffect, useState } from 'react'
 import loanVaultContract from '../../contract/loanVaultContract'
+import useDeposit from '../../hooks/useDeposit'
+import useWithdraw from '../../hooks/useWithdraw'
 
 const { Title, Text } = Typography
 
@@ -24,43 +26,56 @@ export function EarnContainer() {
     skip: !walletAccount
   })
 
-  useEffect(() => {
-    const handleTvl = async () => {
-      setTvl(await loanVaultContract().getLockedAmount())
-    }
-
+  const handleSuccessDeposit = () => {
+    setDepositAmount('')
     handleTvl()
-  }, [])
-
-  useEffect(() => {
-    const handleLendedBalance = async () => {
-      setLendedBalance(await loanVaultContract().getLendedAmount())
-    }
-
     handleLendedBalance()
+    handleBalance()
+    update()
+  }
+  const { deposit, isLoading: depositLoading } = useDeposit(handleSuccessDeposit)
+  const { withdraw, isLoading: withdrawLoading } = useWithdraw(handleSuccessDeposit)
+
+  const handleTvl = useCallback(async () => {
+    setTvl(await loanVaultContract().getLockedAmount())
   }, [])
 
   useEffect(() => {
-    const handleBalance = async () => {
-      if (!signerProvider || !walletAccount) {
-        return
-      }
+    handleTvl()
+  }, [handleTvl])
 
-      const balanceCoins = coins((await signerProvider.getBalance(walletAccount)).toString(), 18)
-
-      setBalance(Number(balanceCoins).toLocaleString('en', { maximumFractionDigits: 5 }))
-    }
-
-    handleBalance()
-  }, [signerProvider, walletAccount])
+  const handleLendedBalance = useCallback(async () => {
+    setLendedBalance(await loanVaultContract().getLendedAmount())
+  }, [])
 
   useEffect(() => {
+    handleLendedBalance()
+  }, [handleLendedBalance])
+
+  const handleBalance = useCallback(async () => {
+    if (!signerProvider || !walletAccount) {
+      return
+    }
+
+    const balanceCoins = coins((await signerProvider.getBalance(walletAccount)).toString(), 18)
+
+    setBalance(Number(balanceCoins).toLocaleString('en', { maximumFractionDigits: 5 }))
+  }, [signerProvider, walletAccount])
+  useEffect(() => {
+    handleBalance()
+  }, [handleBalance])
+
+  const update = useCallback(() => {
     if (!lendedBalance || !tvl) {
       return
     }
 
     setUtilization(((Number(tvl) / Number(lendedBalance)) * 100).toLocaleString('en', { maximumFractionDigits: 2 }))
   }, [lendedBalance, tvl])
+
+  useEffect(() => {
+    update()
+  }, [update])
 
   return (
     <Row>
@@ -90,24 +105,31 @@ export function EarnContainer() {
       <Col span={16}>
         <Space direction='vertical' size={16}>
           <Title style={{ marginBottom: '8px' }} level={4}>
-            My lending
+            My Stake
           </Title>
           <Row gutter={[8, 0]}>
             <Col span={12}>
               <Card>
                 <Space direction='vertical' size={16}>
                   <Form.Item label='Deposit amount' extra={<Text type='secondary'>Balance: {balance} ETH</Text>}>
-                    <Input.Search
+                    <Input
                       onChange={e => setDepositAmount(e.target.value)}
                       value={depositAmount}
-                      enterButton={<Button>Use max</Button>}
                       addonBefore={<Text>ETH</Text>}
                       type='number'
                     />
                   </Form.Item>
-                  <Button disabled={!depositAmount} block type='primary'>
-                    Deposit
-                  </Button>
+                  {signerProvider && (
+                    <Button
+                      disabled={!depositAmount}
+                      block
+                      type='primary'
+                      onClick={() => deposit(signerProvider, depositAmount)}
+                      loading={depositLoading}
+                    >
+                      Deposit
+                    </Button>
+                  )}
                 </Space>
               </Card>
             </Col>
@@ -141,9 +163,17 @@ export function EarnContainer() {
                   <Col span={12}>
                     <Space direction='vertical' size={4}>
                       <Text />
-                      <Button disabled={!data?.lender?.amount} block type='primary'>
-                        Withdraw
-                      </Button>
+                      {signerProvider && (
+                        <Button
+                          disabled={!data?.lender?.amount}
+                          onClick={() => withdraw(signerProvider)}
+                          block
+                          type='primary'
+                          loading={withdrawLoading}
+                        >
+                          Withdraw
+                        </Button>
+                      )}
                     </Space>
                   </Col>
                 </Row>
