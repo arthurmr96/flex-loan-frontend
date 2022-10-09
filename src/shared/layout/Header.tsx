@@ -1,4 +1,4 @@
-import logo from '@assets/logo.png'
+import logo from '@assets/logo.svg'
 import { Col, Image, Layout, Menu, Row, Space, Typography } from 'antd'
 import { ItemType } from 'antd/es/menu/hooks/useItems'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'

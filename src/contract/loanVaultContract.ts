@@ -16,10 +16,9 @@ const loanVaultContract = () => {
       try {
         const florPrice = await loanVaultReadContract.collectionPrice(collectionAddress.toLocaleLowerCase())
         const florPriceFormated = coins(ethersBn.from(florPrice.answer).toString(), 18)
-        console.log('florPriceFormated', florPriceFormated)
+
         return florPriceFormated ? formatToLocaleString(florPriceFormated, 4) : '0'
       } catch (error) {
-        console.log('error:12 ', error)
         return ''
       }
     },
