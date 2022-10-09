@@ -13,16 +13,17 @@ const loanVaultContract = (): LaudVaultContract => {
         'https://responsive-neat-putty.ethereum-goerli.discover.quiknode.pro/6f3fda4618bcb8e1aa69584e19713e61e21a0502/'
       )
       const loanVaultReadContract: ethers.Contract = new ethers.Contract(
-        '0x3227f9572a442fccC630CEBc036B41d1D3c0F48F',
+        '0xa20EB2573a8fe6872da89E0F3ec81c147d32F613',
         loanVaultAbi,
         provider
       )
       try {
-        const florPrice = await loanVaultReadContract.getLatestPrice(collectionAddress.toLocaleLowerCase())
+        const florPrice = await loanVaultReadContract.collectionPrice(collectionAddress.toLocaleLowerCase())
         const florPriceFormated = coins(ethersBn.from(florPrice.answer).toString(), 18)
+        console.log('florPriceFormated', florPriceFormated)
         return florPriceFormated ? formatToLocaleString(florPriceFormated, 4) : '0'
       } catch (error) {
-        console.log('error: ', error)
+        console.log('error:12 ', error)
         return ''
       }
     }
