@@ -12,6 +12,8 @@ export function EarnContainer() {
   const walletAccount = useReactiveVar(walletAccountVar)
   const signerProvider = useReactiveVar(signerProviderVar)
   const [tvl, setTvl] = useState('0')
+  const [lendedBalance, setLendedBalance] = useState('0')
+  const [utilization, setUtilization] = useState('0')
   const [balance, setBalance] = useState('0')
   const [depositAmount, setDepositAmount] = useState('')
   const [withdrawAmount, setWithdrawAmount] = useState('')
@@ -25,10 +27,18 @@ export function EarnContainer() {
 
   useEffect(() => {
     const handleTvl = async () => {
-      setTvl(await loanVaultContract().getTvl())
+      setTvl(await loanVaultContract().getLockedAmount())
     }
 
     handleTvl()
+  }, [])
+
+  useEffect(() => {
+    const handleLendedBalance = async () => {
+      setLendedBalance(await loanVaultContract().getLendedAmount())
+    }
+
+    handleLendedBalance()
   }, [])
 
   useEffect(() => {
@@ -45,6 +55,14 @@ export function EarnContainer() {
     handleBalance()
   }, [signerProvider, walletAccount])
 
+  useEffect(() => {
+    if (!lendedBalance || !tvl) {
+      return
+    }
+
+    setUtilization(((Number(tvl) / Number(lendedBalance)) * 100).toLocaleString('en', { maximumFractionDigits: 2 }))
+  }, [lendedBalance, tvl])
+
   return (
     <Row>
       <Col span={8}>
@@ -57,16 +75,16 @@ export function EarnContainer() {
             <Text strong>{tvl} ETH</Text>
           </Space>
           <Space direction='vertical' size={0}>
-            <Text>Total Borrow</Text>
-            <Text strong>Total Value Locked</Text>
+            <Text>Total Lend</Text>
+            <Text strong>{lendedBalance} ETH</Text>
           </Space>
           <Space direction='vertical' size={0}>
             <Text>Utilization</Text>
-            <Text strong>Total Value Locked</Text>
+            <Text strong>{utilization}%</Text>
           </Space>
           <Space direction='vertical' size={0}>
             <Text>Lending Yield</Text>
-            <Text strong>Total Value Locked</Text>
+            <Text strong>12% yearly</Text>
           </Space>
         </Space>
       </Col>

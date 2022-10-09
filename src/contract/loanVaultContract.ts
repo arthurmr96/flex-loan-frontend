@@ -22,7 +22,7 @@ const loanVaultContract = () => {
         return ''
       }
     },
-    getTvl: async () => {
+    getLockedAmount: async () => {
       const provider = new ethers.providers.JsonRpcProvider(
         'https://responsive-neat-putty.ethereum-goerli.discover.quiknode.pro/6f3fda4618bcb8e1aa69584e19713e61e21a0502/'
       )
@@ -33,6 +33,20 @@ const loanVaultContract = () => {
       )
 
       const balance: Promise<string> = await loanVaultReadContract.lockedAmount()
+
+      return Number(coins(balance?.toString() || '0', 18)).toLocaleString('en', { maximumFractionDigits: 5 })
+    },
+    getLendedAmount: async () => {
+      const provider = new ethers.providers.JsonRpcProvider(
+        'https://responsive-neat-putty.ethereum-goerli.discover.quiknode.pro/6f3fda4618bcb8e1aa69584e19713e61e21a0502/'
+      )
+      const loanVaultReadContract: ethers.Contract = new ethers.Contract(
+        '0xa20EB2573a8fe6872da89E0F3ec81c147d32F613',
+        loanVaultAbi,
+        provider
+      )
+
+      const balance: Promise<string> = await loanVaultReadContract.lendedAmount()
 
       return Number(coins(balance?.toString() || '0', 18)).toLocaleString('en', { maximumFractionDigits: 5 })
     }
