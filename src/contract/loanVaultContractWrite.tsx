@@ -3,11 +3,7 @@ import fromExponential from 'from-exponential'
 import { getGasLimit, getGasPrice } from '../services/UtilService'
 import loanVaultAbi from './loanVault.json'
 
-interface LaudVaultContract {
-  loan(tokenId: string, collectionAddress: string, duration: number): Promise<string>
-}
-
-const loanVaultContractWrite = (signerProvider: ethers.providers.Web3Provider): LaudVaultContract => {
+const loanVaultContractWrite = (signerProvider: ethers.providers.Web3Provider) => {
   const signer: ethers.Signer = signerProvider.getSigner()
   const loanVaultContract: ethers.Contract = new ethers.Contract('0xa20EB2573a8fe6872da89E0F3ec81c147d32F613', loanVaultAbi, signer)
 
@@ -28,6 +24,25 @@ const loanVaultContractWrite = (signerProvider: ethers.providers.Web3Provider): 
         }
       )
       return approveTransaction.hash as string
+    },
+    deposit: async (amount: string) => {
+      const gasLimit = await loanVaultContract.estimateGas.deposit({ value: ethers.utils.parseEther(amount) })
+      const gasPrice = await getGasPrice(signerProvider)
+      const depositTransaction: ethers.Transaction = await loanVaultContract.deposit({
+        gasLimit: getGasLimit(gasLimit),
+        gasPrice,
+        value: ethers.utils.parseEther(amount)
+      })
+      return depositTransaction.hash as string
+    },
+    withdraw: async () => {
+      const gasLimit = await loanVaultContract.estimateGas.deposit()
+      const gasPrice = await getGasPrice(signerProvider)
+      const depositTransaction: ethers.Transaction = await loanVaultContract.deposit({
+        gasLimit: getGasLimit(gasLimit),
+        gasPrice
+      })
+      return depositTransaction.hash as string
     }
   }
 }

@@ -16,11 +16,10 @@ export function EarnContainer() {
   const [utilization, setUtilization] = useState('0')
   const [balance, setBalance] = useState('0')
   const [depositAmount, setDepositAmount] = useState('')
-  const [withdrawAmount, setWithdrawAmount] = useState('')
 
   const { data } = useQuery<LenderBalanceQueryData, LenderBalanceQueryVars>(LENDER_BALANCE_QUERY, {
     variables: {
-      lender: walletAccount
+      lender: walletAccount?.toLowerCase()
     },
     skip: !walletAccount
   })
@@ -94,26 +93,6 @@ export function EarnContainer() {
             My lending
           </Title>
           <Row gutter={[8, 0]}>
-            <Col span={8}>
-              <Space direction='vertical' size={4}>
-                <Text>Deposited</Text>
-                <Text strong>{Number(coins(data?.lender?.amount || '0', 18)).toLocaleString('en', { maximumFractionDigits: 5 })} ETH</Text>
-              </Space>
-            </Col>
-            <Col span={8}>
-              <Space direction='vertical' size={4}>
-                <Text>Interest Earned</Text>
-                <Text strong>0 ETH</Text>
-              </Space>
-            </Col>
-            <Col span={8}>
-              <Space direction='vertical' size={4}>
-                <Text>Total</Text>
-                <Text strong>{Number(coins(data?.lender?.amount || '0', 18)).toLocaleString('en', { maximumFractionDigits: 5 })} ETH</Text>
-              </Space>
-            </Col>
-          </Row>
-          <Row gutter={[8, 0]}>
             <Col span={12}>
               <Card>
                 <Space direction='vertical' size={16}>
@@ -133,28 +112,41 @@ export function EarnContainer() {
               </Card>
             </Col>
             <Col span={12}>
-              <Card>
-                <Space direction='vertical' size={16}>
-                  <Form.Item
-                    label='Withdraw amount'
-                    extra={
-                      <Text type='secondary'>
-                        Stake: {Number(coins(data?.lender?.amount || '0', 18)).toLocaleString('en', { maximumFractionDigits: 5 })} ETH
+              <Card style={{ height: '182px' }}>
+                <Row>
+                  <Col span={12}>
+                    <Space direction='vertical' size={4}>
+                      <Text>Deposited</Text>
+                      <Text strong>
+                        {Number(coins(data?.lender?.amount || '0', 18)).toLocaleString('en', { maximumFractionDigits: 5 })} ETH
                       </Text>
-                    }
-                  >
-                    <Input.Search
-                      onChange={e => setWithdrawAmount(e.target.value)}
-                      value={withdrawAmount}
-                      enterButton={<Button>Use max</Button>}
-                      addonBefore={<Text>ETH</Text>}
-                      type='number'
-                    />
-                  </Form.Item>
-                  <Button disabled={!withdrawAmount} block type='primary'>
-                    Withdraw
-                  </Button>
-                </Space>
+                    </Space>
+                  </Col>
+                  <Col span={12}>
+                    <Space direction='vertical' size={4}>
+                      <Text>Interest Earned</Text>
+                      <Text strong>0 ETH</Text>
+                    </Space>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={12}>
+                    <Space direction='vertical' size={4}>
+                      <Text>Total</Text>
+                      <Text strong>
+                        {Number(coins(data?.lender?.amount || '0', 18)).toLocaleString('en', { maximumFractionDigits: 5 })} ETH
+                      </Text>
+                    </Space>
+                  </Col>
+                  <Col span={12}>
+                    <Space direction='vertical' size={4}>
+                      <Text />
+                      <Button disabled={!data?.lender?.amount} block type='primary'>
+                        Withdraw
+                      </Button>
+                    </Space>
+                  </Col>
+                </Row>
               </Card>
             </Col>
           </Row>
