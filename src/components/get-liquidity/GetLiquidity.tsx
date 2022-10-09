@@ -1,4 +1,5 @@
 import { ChromeOutlined } from '@ant-design/icons'
+import { useReactiveVar } from '@apollo/client'
 import azuki from '@assets/azuki.svg'
 import boredApe from '@assets/bored-ape.svg'
 import criptopunks from '@assets/criptopunks.svg'
@@ -11,6 +12,7 @@ import { DataTable } from '../../types/GetLiquidity'
 import { GetLoanModal, getLoanModalVar } from './GetLoanModal'
 
 function GetLiquidityTableData() {
+  const getLoanModal = useReactiveVar(getLoanModalVar)
   const [tableData, setTableData] = useState<DataTable[]>([])
   const [loading, setLoading] = useState(true)
   const columns = [
@@ -87,7 +89,7 @@ function GetLiquidityTableData() {
           <Table loading={loading} columns={columns} dataSource={tableData} style={{ overflow: 'auto' }} pagination={false} />
         </Col>
       </Row>
-      <GetLoanModal />
+      {!!getLoanModal && <GetLoanModal />}
     </>
   )
 }

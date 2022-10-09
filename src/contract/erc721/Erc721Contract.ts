@@ -22,7 +22,7 @@ export const erc721Contract = (signerProvider: ethers.providers.Web3Provider): E
 
         return txRequest.hash as string
       } catch (e) {
-        console.error(e, 'Failed to execute transaction')
+        console.error(e)
         return undefined
       }
     }

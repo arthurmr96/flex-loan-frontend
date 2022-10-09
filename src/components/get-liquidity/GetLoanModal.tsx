@@ -1,10 +1,12 @@
-import { UserOutlined } from '@ant-design/icons'
+import { LoadingOutlined, UserOutlined } from '@ant-design/icons'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { Avatar, Button, Col, Divider, Input, Modal, Radio, RadioChangeEvent, Row, Typography } from 'antd'
 import BigNumber from 'bignumber.js'
 import { useState } from 'react'
 import styled from 'styled-components'
-import { signerProviderVar } from '../../graphql/variables/walletVariable'
+import { signerProviderVar, walletAccountVar } from '../../graphql/variables/walletVariable'
+import { useErc721IsApprovedForAll } from '../../hooks/useErc721IsApprovedForAll'
+import { useErc721SetApprovalForAll } from '../../hooks/useErc721SetApprovalForAll'
 import useLoan from '../../hooks/useLoan'
 import { formatToLocaleString } from '../../services/UtilService'
 import { DataTable } from '../../types/GetLiquidity'
@@ -12,10 +14,17 @@ import { DataTable } from '../../types/GetLiquidity'
 export const getLoanModalVar = makeVar<DataTable | null>(null)
 export function GetLoanModal() {
   const signerProvider = useReactiveVar(signerProviderVar)
+  const walletAccount = useReactiveVar(walletAccountVar)
   const [tokenId, setTokenId] = useState('')
   const [duration, setDuration] = useState(1)
   const getLoanModal = useReactiveVar(getLoanModalVar)
-  const { loan, isLoading } = useLoan(() => console.log('terminou'))
+  const { loan, isLoading: loanLoading } = useLoan(() => console.log('terminou'))
+  const {
+    isLoading: isApproveForAllLoading,
+    isApprovedForAll,
+    verifyIsApproveForAll
+  } = useErc721IsApprovedForAll(getLoanModal?.collectionAddress || '', walletAccount, '0xa20EB2573a8fe6872da89E0F3ec81c147d32F613')
+  const { isLoading: isLoadingApproveForAll, setApprovalForAll } = useErc721SetApprovalForAll(verifyIsApproveForAll)
   const onChange = (e: RadioChangeEvent) => {
     setDuration(e.target.value as number)
   }
@@ -27,10 +36,12 @@ export function GetLoanModal() {
 
   async function handleLoan() {
     if (!signerProvider) return
-    console.log('entrei')
     await loan(signerProvider, tokenId, getLoanModal?.collectionAddress || '', duration)
   }
-
+  async function handleUnlock() {
+    if (!signerProvider) return
+    setApprovalForAll(signerProvider, getLoanModal?.collectionAddress || '', '0xa20EB2573a8fe6872da89E0F3ec81c147d32F613')
+  }
   return (
     <Modal title='Get Liquidity' footer='' open={!!getLoanModal} onOk={handleCancel} onCancel={handleCancel} destroyOnClose>
       <Row gutter={[0, 24]}>
@@ -71,10 +82,18 @@ export function GetLoanModal() {
             </Radio.Group>
           </ContainerInput>
         </Col>
-        <Col span={24}>
-          <Button type='primary' disabled={!signerProvider} block loading={isLoading} onClick={handleLoan}>
-            Get Loan
-          </Button>
+        <Col span={24} style={{ display: 'flex', justifyContent: 'center' }}>
+          {isApproveForAllLoading && walletAccount && <LoadingOutlined />}
+          {!isApproveForAllLoading && isApprovedForAll && walletAccount && (
+            <Button type='primary' disabled={!signerProvider} block loading={loanLoading} onClick={handleLoan}>
+              Get Loan
+            </Button>
+          )}
+          {!isApproveForAllLoading && !isApprovedForAll && walletAccount && (
+            <Button loading={isLoadingApproveForAll} type='primary' disabled={!signerProvider} block onClick={handleUnlock}>
+              unlock
+            </Button>
+          )}
         </Col>
       </Row>
     </Modal>
