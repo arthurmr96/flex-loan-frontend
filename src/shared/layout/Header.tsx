@@ -25,6 +25,20 @@ export function Header({ title, items, network }: HeaderProps) {
     setSelectedKey(router.route)
   }, [router.route])
 
+  useEffect(() => {
+    if (selectedKey === '/[network]/get-liquidity') {
+      router.push(`/${network}/get-liquidity`)
+    }
+
+    if (selectedKey === '/[network]/earn') {
+      router.push(`/${network}/earn`)
+    }
+
+    if (selectedKey === '/[network]/my-loans') {
+      router.push(`/${network}/my-loans`)
+    }
+  }, [network, router, selectedKey])
+
   return (
     <AntHeader>
       <Row align='middle'>
@@ -44,6 +58,7 @@ export function Header({ title, items, network }: HeaderProps) {
             <Col span={18} flex='300px'>
               <Menu
                 selectedKeys={[selectedKey]}
+                onClick={e => setSelectedKey(e.key)}
                 mode='horizontal'
                 style={{ minWidth: '0', flex: `${!isSmallDevices ? '1 0 auto' : ''}` }}
                 items={items}
