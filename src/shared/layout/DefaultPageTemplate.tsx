@@ -14,6 +14,7 @@ interface DefaultPageTemplateProps extends PageHeaderProps {
   children: ReactNode
   skipMetaTags?: boolean
   pageHeaderInit?: ReactNode
+  subtitle?: ReactNode
 }
 
 export function DefaultPageTemplate({
@@ -23,7 +24,8 @@ export function DefaultPageTemplate({
   pageHeaderProps,
   pageHeaderAfter,
   pageHeaderTitle,
-  pageHeaderInit
+  pageHeaderInit,
+  subtitle
 }: DefaultPageTemplateProps) {
   const items: ItemType[] = [
     {
@@ -53,7 +55,12 @@ export function DefaultPageTemplate({
         <Divider />
         <Main>
           {!!pageHeaderInit && pageHeaderInit}
-          <PageHeader pageHeaderTitle={pageHeaderTitle} pageHeaderAfter={pageHeaderAfter} pageHeaderProps={pageHeaderProps} />
+          <PageHeader
+            subtitle={subtitle}
+            pageHeaderTitle={pageHeaderTitle}
+            pageHeaderAfter={pageHeaderAfter}
+            pageHeaderProps={pageHeaderProps}
+          />
           {children}
         </Main>
         <Footer />

@@ -3,7 +3,6 @@ const withLess = require('next-with-less')
 
 const nextConfig = {
   reactStrictMode: true,
-  styledComponents: true,
   swcMinify: false,
   compiler: {
     styledComponents: true
