@@ -26,7 +26,8 @@ function MyLoanCard(data: any) {
       setLoading(false)
     }
     get()
-  }, [data.collateralTargetAddress, data.collateralTargetTokenId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <LeansContainer>
       {nftMetadata && !loading && <ContainerNft src={nftMetadata.rawMetadata.image} />}
